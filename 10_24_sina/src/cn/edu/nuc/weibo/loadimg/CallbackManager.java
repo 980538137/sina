@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import android.graphics.Bitmap;
 
 public class CallbackManager {
-	ConcurrentHashMap<String, List<ImageCallback>> mCallbackMap = null;
+	private ConcurrentHashMap<String, List<ImageCallback>> mCallbackMap = null;
 
 	public CallbackManager() {
 		mCallbackMap = new ConcurrentHashMap<String, List<ImageCallback>>();

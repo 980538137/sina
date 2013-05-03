@@ -10,10 +10,10 @@ import android.os.Handler;
 import android.os.Message;
 
 public class AsyncImageLoader {
-    ImageManager mImageManager = null;
-    CallbackManager mCallbackManager = null;
-    BlockingQueue<String> mUrlQueue = null;
-    DownloadThread mDownloadThread = null;
+    private ImageManager mImageManager = null;
+    private CallbackManager mCallbackManager = null;
+    private BlockingQueue<String> mUrlQueue = null;
+    private DownloadThread mDownloadThread = null;
     private static final String EXTRA_IMG_URL = "extra_img_url";
     private static final String EXTRA_IMG = "extra_img";
 
