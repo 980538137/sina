@@ -26,33 +26,33 @@ public class WeiboParseManager {
 	private static final String PATTERN_NAME = "@([\u4e00-\u9fa5A-Za-z0-9_]*)";//名字Pattern
 	private static final String PATTERN_EMOTION = "\\[[\u4e00-\u9fa5A-Za-z0-9]*\\]";//表情Pattern
     //阻塞队列，存放微博内容
-	private BlockingQueue<String> weiboQueue = null;
+	private BlockingQueue<String> mWeiboQueue = null;
     
-	private CallbackManager callbackManager = null;
-	private ParseThread parseThread = null;
-	private EmotionsParse emotionsParse = null;
+	private CallbackManager mCallbackManager = null;
+	private ParseThread mParseThread = null;
+	private EmotionsParse mEmotionsParse = null;
 
 	public WeiboParseManager() {
-		weiboQueue = new ArrayBlockingQueue<String>(50);
-		callbackManager = new CallbackManager();
-		parseThread = new ParseThread();
-		emotionsParse = new EmotionsParse();
+		mWeiboQueue = new ArrayBlockingQueue<String>(50);
+		mCallbackManager = new CallbackManager();
+		mParseThread = new ParseThread();
+		mEmotionsParse = new EmotionsParse();
 	}
     //解析微博内容中的话题，表情，名字，URl
 	public SpannableStringBuilder parseWeibo(String weibo,
 			WeiboParseCallback callback) throws InterruptedException {
 		SpannableStringBuilder builder = new SpannableStringBuilder(weibo);
-		callbackManager.put(weibo, callback);
+		mCallbackManager.put(weibo, callback);
 
-		if (!weiboQueue.contains(weibo)) {
-			weiboQueue.put(weibo);
+		if (!mWeiboQueue.contains(weibo)) {
+			mWeiboQueue.put(weibo);
 		}
-		State state = parseThread.getState();
+		State state = mParseThread.getState();
 		if (state == State.NEW) {
-			parseThread.start();
+			mParseThread.start();
 		} else if (state == State.TERMINATED) {
-			parseThread = new ParseThread();
-			parseThread.start();
+			mParseThread = new ParseThread();
+			mParseThread.start();
 		}
 		return builder;
 
@@ -86,7 +86,7 @@ public class WeiboParseManager {
 		for (HashMap<String, Object> hashMap : list) {
 			if (isEmotion) {//解析表情
 				String phrase = (String) hashMap.get("phrase");
-				Drawable drawable = emotionsParse.getEmotionByName(phrase);
+				Drawable drawable = mEmotionsParse.getEmotionByName(phrase);
 				if (drawable != null) {
 					drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 					ImageSpan imageSpan = new ImageSpan(drawable);
@@ -105,13 +105,13 @@ public class WeiboParseManager {
 		}
 	}
 
-	Handler handler = new Handler() {
+	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
 			String weibo = (String) msg.getData().getSerializable("weibo");
 			SpannableStringBuilder builder = (SpannableStringBuilder) msg
 					.getData().get("ssb");
 			//回调刷新
-			callbackManager.callback(weibo, builder);
+			mCallbackManager.callback(weibo, builder);
 		};
 	};
     //解析线程
@@ -121,16 +121,16 @@ public class WeiboParseManager {
 		@Override
 		public void run() {
 			while (flag) {
-				String weibo = weiboQueue.poll();
+				String weibo = mWeiboQueue.poll();
 				if (weibo == null) {
 					break;
 				}
 				SpannableStringBuilder builder = parseWeibo(weibo);
-				Message msg = handler.obtainMessage();
+				Message msg = mHandler.obtainMessage();
 				Bundle bundle = msg.getData();
 				bundle.putSerializable("weibo", weibo);
 				bundle.putCharSequence("ssb", builder);
-				handler.sendMessage(msg);
+				mHandler.sendMessage(msg);
 			}
 
 		}
