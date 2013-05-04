@@ -29,18 +29,18 @@ import com.weibo.net.Weibo;
 import com.weibo.net.WeiboException;
 
 public class MainService extends Service implements Runnable {
-	private static Queue<Task> tasks = new LinkedList<Task>();
-	private static List<Activity> activities = new ArrayList<Activity>();
+	private static Queue<Task> mTasks = new LinkedList<Task>();
+	private static List<Activity> mActivities = new ArrayList<Activity>();
 	private boolean isRunning = true;
-	private Weibo weibo = null;
+	private Weibo mWeibo = null;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		weibo = Weibo.getInstance();
+		mWeibo = Weibo.getInstance();
 		Utility.setAuthorization(new Oauth2AccessTokenHeader());
-		Thread thread = new Thread(this);
-		thread.start();
+		Thread mThread = new Thread(this);
+		mThread.start();
 	}
 
 	/**
@@ -49,7 +49,7 @@ public class MainService extends Service implements Runnable {
 	 * @param task
 	 */
 	public static void addTask(Task task) {
-		tasks.add(task);
+		mTasks.add(task);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class MainService extends Service implements Runnable {
 	 * @param activity
 	 */
 	public static void addActivity(Activity activity) {
-		activities.add(activity);
+		mActivities.add(activity);
 	}
 
 	/**
@@ -69,11 +69,11 @@ public class MainService extends Service implements Runnable {
 	 * @return
 	 */
 	public Activity getActivityByName(String name) {
-		if (!activities.isEmpty()) {
-			for (int i = 0; i < activities.size(); i++) {
-				Activity activity = activities.get(i);
+		if (!mActivities.isEmpty()) {
+			for (int i = 0; i < mActivities.size(); i++) {
+				Activity activity = mActivities.get(i);
 				if (activity.getClass().getName().indexOf(name) > 0) {
-					activities.remove(i);
+					mActivities.remove(i);
 					return activity;
 				}
 			}
@@ -84,9 +84,9 @@ public class MainService extends Service implements Runnable {
 	@Override
 	public void run() {
 		while (isRunning) {
-			if (!tasks.isEmpty()) {
+			if (!mTasks.isEmpty()) {
 				Task task = null;
-				task = tasks.poll();
+				task = mTasks.poll();
 				if (task != null) {
 					try {
 						doTask(task);
@@ -110,68 +110,68 @@ public class MainService extends Service implements Runnable {
 	private void doTask(Task task) throws WeiboException, JSONException {
 		Message msg = handler.obtainMessage();
 		msg.what = task.getTaskId();
-		HashMap<String, Object> taskParams = (HashMap<String, Object>) task
+		HashMap<String, Object> mTaskParams = (HashMap<String, Object>) task
 				.getTaskParams();
 		String return_msg = null;
-		List<Status> statuses = null;
-		List<Comment> comments = null;
-		WeiboHomeService weiboHomeService = new WeiboHomeService(this);
+		List<Status> mStatuses = null;
+		List<Comment> mComments = null;
+		WeiboHomeService mweiboHomeService = new WeiboHomeService(this);
 		switch (task.getTaskId()) {
 			case Task.WEIBO_USER_INFO :// 获取用户信息
-				return_msg = WeiboUtils.getUserInfo(weibo, Weibo.getAppKey());
+				return_msg = WeiboUtils.getUserInfo(mWeibo, Weibo.getAppKey());
 				msg.obj = return_msg;
 				break;
 			case Task.WEIBO_STATUSES_FRIENDS_TIMELINE :// 获取当前登录用户所关注用户的最新微博
-				statuses = WeiboUtils
-						.getFriendsTimeLine(task, weiboHomeService);
-				msg.obj = statuses;
+				mStatuses = WeiboUtils
+						.getFriendsTimeLine(task, mweiboHomeService);
+				msg.obj = mStatuses;
 				break;
 			case Task.WEIBO_STATUSES_UPDATE :// 发布一条微博
-				return_msg = WeiboUtils.update(weibo, Weibo.getAppKey(),
+				return_msg = WeiboUtils.update(mWeibo, Weibo.getAppKey(),
 						(HashMap<String, Object>) task.getTaskParams());
 				break;
 			case Task.WEIBO_STATUSES_UPLOAD :// 发布一条带图片的的微博
-				return_msg = WeiboUtils.upload(weibo, Weibo.getAppKey(),
+				return_msg = WeiboUtils.upload(mWeibo, Weibo.getAppKey(),
 						(HashMap<String, Object>) task.getTaskParams());
 				break;
 			case Task.WEIBO_STATUSES_COMMENT :// 评论微博
-				return_msg = WeiboUtils.comment(weibo, Weibo.getAppKey(),
+				return_msg = WeiboUtils.comment(mWeibo, Weibo.getAppKey(),
 						(HashMap<String, Object>) task.getTaskParams());
 				break;
 			case Task.WEIBO_STATUSES_REPOST :// 转发微博
-				return_msg = WeiboUtils.repost(weibo, Weibo.getAppKey(),
+				return_msg = WeiboUtils.repost(mWeibo, Weibo.getAppKey(),
 						(HashMap<String, Object>) task.getTaskParams());
 				break;
 			case Task.WEIBO_FAVORITE_CREATE :// 收藏微博
-				return_msg = WeiboUtils.favorite(weibo, Weibo.getAppKey(),
+				return_msg = WeiboUtils.favorite(mWeibo, Weibo.getAppKey(),
 						(HashMap<String, Object>) task.getTaskParams(), true);
 				break;
 			case Task.WEIBO_FAVORITE_DESTROY :
-				return_msg = WeiboUtils.favorite(weibo, Weibo.getAppKey(),
+				return_msg = WeiboUtils.favorite(mWeibo, Weibo.getAppKey(),
 						(HashMap<String, Object>) task.getTaskParams(), false);
 				break;
 			case Task.WEIBO_STATUSES_DESTROY :
 
 				break;
 			case Task.WEIBO_MSG_AT_WB :// 获取@当前用户的微博
-				statuses = WeiboUtils.getStatusesMentions(weibo,
-						Weibo.getAppKey(), taskParams);
-				msg.obj = statuses;
+				mStatuses = WeiboUtils.getStatusesMentions(mWeibo,
+						Weibo.getAppKey(), mTaskParams);
+				msg.obj = mStatuses;
 				break;
 			case Task.WEIBO_MSG_AT_COMMENT :// 获取@当前用户的评论
-				comments = WeiboUtils.getCommentsMentions(weibo,
-						Weibo.getAppKey(), taskParams);
-				msg.obj = comments;
+				mComments = WeiboUtils.getCommentsMentions(mWeibo,
+						Weibo.getAppKey(), mTaskParams);
+				msg.obj = mComments;
 				break;
 			case Task.WEIBO_MSG_COMMENT_BY_ME :// 获取当前用户收到的评论和发出的评论
-				comments = WeiboUtils.getCommentsByMe(weibo, Weibo.getAppKey(),
+				mComments = WeiboUtils.getCommentsByMe(mWeibo, Weibo.getAppKey(),
 						(HashMap<String, Object>) task.getTaskParams());
-				msg.obj = comments;
+				msg.obj = mComments;
 				break;
 			case Task.WEIBO_MSG_COMMENT_TO_ME :
-				comments = WeiboUtils.getCommentsToMe(weibo, Weibo.getAppKey(),
-						taskParams);
-				msg.obj = comments;
+				mComments = WeiboUtils.getCommentsToMe(mWeibo, Weibo.getAppKey(),
+						mTaskParams);
+				msg.obj = mComments;
 				break;
 			case Task.WEIBO_MSG_MESSAGE :// 当前用户的私信
 				break;
@@ -181,10 +181,10 @@ public class MainService extends Service implements Runnable {
 				return_msg = WeiboUtils.getEmotions();
 				break;
 			case Task.WEIBO_PLACE_USER_TIMELINE :
-				statuses = WeiboUtils.getPlaceUserTimeline(weibo,
-						Weibo.getAppKey(), taskParams);
-				Geos geos = WeiboUtils.getGeoToAddress(weibo,
-						Weibo.getAppKey(), statuses);
+				mStatuses = WeiboUtils.getPlaceUserTimeline(mWeibo,
+						Weibo.getAppKey(), mTaskParams);
+				Geos geos = WeiboUtils.getGeoToAddress(mWeibo,
+						Weibo.getAppKey(), mStatuses);
 				msg.obj = geos;
 				break;
 		}
@@ -274,14 +274,14 @@ public class MainService extends Service implements Runnable {
 	 */
 	public static void appExit(Context context) {
 		// finish所有的activity
-		for (Activity activity : activities) {
+		for (Activity activity : mActivities) {
 			if (!activity.isFinishing()) {
 				activity.finish();
 			}
 		}
 		// 停止服务
-		Intent service = new Intent("cn.edu.nuc.logic.MainService");
-		context.stopService(service);
+		Intent mService = new Intent("cn.edu.nuc.logic.MainService");
+		context.stopService(mService);
 	}
 
 }
