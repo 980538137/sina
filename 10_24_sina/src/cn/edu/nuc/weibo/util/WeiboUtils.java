@@ -39,8 +39,8 @@ public class WeiboUtils {
 		parameters.add("source", source);
 		parameters.add("screen_name", "song980538137");
 		String url_userinfo = Weibo.getSERVER() + "users/show.json";
-		return weibo.request(WeiboApplication.mContext, url_userinfo, parameters,
-				Utility.HTTPMETHOD_GET, weibo.getAccessToken());
+		return weibo.request(WeiboApplication.mContext, url_userinfo,
+				parameters, Utility.HTTPMETHOD_GET, weibo.getAccessToken());
 	}
 
 	public static List<Status> getFriendsTimeLine(Task task,
@@ -54,8 +54,8 @@ public class WeiboUtils {
 			statuses = weiboHomeService.selectHomeInfo();
 			if (statuses == null) {
 				try {
-					statuses = getFriendsTimeLine(Weibo.getInstance(), Weibo.getAppKey(),
-							taskParams);
+					statuses = getFriendsTimeLine(Weibo.getInstance(),
+							Weibo.getAppKey(), taskParams);
 				} catch (WeiboException e) {
 					e.printStackTrace();
 				} catch (JSONException e) {
@@ -67,8 +67,8 @@ public class WeiboUtils {
 			break;
 		case HomeActivity.MORE_NEW:
 			try {
-				statuses = getFriendsTimeLine(Weibo.getInstance(), Weibo.getAppKey(),
-						taskParams);
+				statuses = getFriendsTimeLine(Weibo.getInstance(),
+						Weibo.getAppKey(), taskParams);
 			} catch (WeiboException e2) {
 				e2.printStackTrace();
 			} catch (JSONException e2) {
@@ -81,12 +81,12 @@ public class WeiboUtils {
 					weiboHomeService.insertHomeInfo(statuses);
 				}
 			}
-			
+
 			break;
 		case HomeActivity.MORE_OLD:
 			try {
-				statuses = getFriendsTimeLine(Weibo.getInstance(), Weibo.getAppKey(),
-						taskParams);
+				statuses = getFriendsTimeLine(Weibo.getInstance(),
+						Weibo.getAppKey(), taskParams);
 			} catch (WeiboException e2) {
 				e2.printStackTrace();
 			} catch (JSONException e2) {
@@ -119,8 +119,9 @@ public class WeiboUtils {
 		}
 		String url_friends_timeline = Weibo.getSERVER()
 				+ "statuses/friends_timeline.json";
-		String statusStr = weibo.request(WeiboApplication.mContext, url_friends_timeline,
-				parameters, Utility.HTTPMETHOD_GET, weibo.getAccessToken());
+		String statusStr = weibo.request(WeiboApplication.mContext,
+				url_friends_timeline, parameters, Utility.HTTPMETHOD_GET,
+				weibo.getAccessToken());
 		return JsonUtils.parseJsonFromStatuses(statusStr);
 	}
 
@@ -201,8 +202,9 @@ public class WeiboUtils {
 		weiboParameters.add("id", weiboParameters.getValue("id"));
 
 		String url_status_destroy = Weibo.getSERVER() + "statuses/destroy.json";
-		return weibo.request(WeiboApplication.mContext, url_status_destroy, weiboParameters,
-				Utility.HTTPMETHOD_POST, weibo.getAccessToken());
+		return weibo.request(WeiboApplication.mContext, url_status_destroy,
+				weiboParameters, Utility.HTTPMETHOD_POST,
+				weibo.getAccessToken());
 	}
 
 	/**
@@ -243,10 +245,11 @@ public class WeiboUtils {
 		parameters.add("source", source);
 		parameters.add("comment", (String) taskParams.get("comment"));
 		parameters.add("id", String.valueOf(taskParams.get("id")));
-		parameters.add("comment_ori", String.valueOf(taskParams.get("comment_ori")));
+		parameters.add("comment_ori",
+				String.valueOf(taskParams.get("comment_ori")));
 		String url_comment = Weibo.getSERVER() + "comments/create.json";
-		return weibo.request(WeiboApplication.mContext, url_comment, parameters,
-				Utility.HTTPMETHOD_POST, weibo.getAccessToken());
+		return weibo.request(WeiboApplication.mContext, url_comment,
+				parameters, Utility.HTTPMETHOD_POST, weibo.getAccessToken());
 	}
 
 	/**
@@ -270,8 +273,8 @@ public class WeiboUtils {
 		} else {
 			url = Weibo.getSERVER() + "favorites/destroy.json";
 		}
-		return weibo.request(WeiboApplication.mContext, url, parameters, Utility.HTTPMETHOD_POST,
-				weibo.getAccessToken());
+		return weibo.request(WeiboApplication.mContext, url, parameters,
+				Utility.HTTPMETHOD_POST, weibo.getAccessToken());
 	}
 
 	/**
@@ -285,8 +288,9 @@ public class WeiboUtils {
 		bundle_emotions.add("source", Weibo.getAppKey());
 		String return_msg = null;
 		try {
-			return_msg = Weibo.getInstance().request(WeiboApplication.mContext, url_emotions, bundle_emotions,
-					Utility.HTTPMETHOD_GET, Weibo.getInstance().getAccessToken());
+			return_msg = Weibo.getInstance().request(WeiboApplication.mContext,
+					url_emotions, bundle_emotions, Utility.HTTPMETHOD_GET,
+					Weibo.getInstance().getAccessToken());
 			String path = "sdcard/emotion.txt";
 			try {
 				FileWriter fileWriter = new FileWriter(new File(path));
@@ -337,9 +341,9 @@ public class WeiboUtils {
 
 		String url_statuses_mentions = Weibo.getSERVER()
 				+ "statuses/mentions.json";
-		String statuses_mentions = weibo
-				.request(WeiboApplication.mContext, url_statuses_mentions, weiboParameters,
-						Utility.HTTPMETHOD_GET, weibo.getAccessToken());
+		String statuses_mentions = weibo.request(WeiboApplication.mContext,
+				url_statuses_mentions, weiboParameters, Utility.HTTPMETHOD_GET,
+				weibo.getAccessToken());
 		List<Status> statuses = JsonUtils
 				.parseJsonFromStatuses(statuses_mentions);
 		return statuses;
@@ -370,9 +374,9 @@ public class WeiboUtils {
 		}
 		String url_comments_mentions = Weibo.getSERVER()
 				+ "comments/mentions.json";
-		String comments_mentions = weibo
-				.request(WeiboApplication.mContext, url_comments_mentions, weiboParameters,
-						Utility.HTTPMETHOD_GET, weibo.getAccessToken());
+		String comments_mentions = weibo.request(WeiboApplication.mContext,
+				url_comments_mentions, weiboParameters, Utility.HTTPMETHOD_GET,
+				weibo.getAccessToken());
 		List<Comment> comments = JsonUtils
 				.parseJsonFromComments(comments_mentions);
 		return comments;
@@ -407,9 +411,9 @@ public class WeiboUtils {
 			}
 		}
 		String url_comments_tome = Weibo.getSERVER() + "comments/to_me.json";
-		String comments_tome = weibo
-				.request(WeiboApplication.mContext, url_comments_tome, weiboParameters,
-						Utility.HTTPMETHOD_GET, weibo.getAccessToken());
+		String comments_tome = weibo.request(WeiboApplication.mContext,
+				url_comments_tome, weiboParameters, Utility.HTTPMETHOD_GET,
+				weibo.getAccessToken());
 		return JsonUtils.parseJsonFromComments(comments_tome);
 	}
 
@@ -436,9 +440,9 @@ public class WeiboUtils {
 			// }
 		}
 		String url_comments_byme = Weibo.getSERVER() + "comments/by_me.json";
-		String comments_byme = weibo
-				.request(WeiboApplication.mContext, url_comments_byme, weiboParameters,
-						Utility.HTTPMETHOD_GET, weibo.getAccessToken());
+		String comments_byme = weibo.request(WeiboApplication.mContext,
+				url_comments_byme, weiboParameters, Utility.HTTPMETHOD_GET,
+				weibo.getAccessToken());
 		return JsonUtils.parseJsonFromComments(comments_byme);
 	}
 
@@ -480,8 +484,9 @@ public class WeiboUtils {
 		weiboParameters.add("coordinate", coordinate);
 
 		String url = Weibo.getSERVER() + "location/geo/geo_to_address.json";
-		String geoToAddress = weibo.request(WeiboApplication.mContext, url, weiboParameters,
-				Utility.HTTPMETHOD_GET, weibo.getAccessToken());
+		String geoToAddress = weibo
+				.request(WeiboApplication.mContext, url, weiboParameters,
+						Utility.HTTPMETHOD_GET, weibo.getAccessToken());
 		return JsonUtils.parseJsonFromGeos(geoToAddress);
 	}
 
