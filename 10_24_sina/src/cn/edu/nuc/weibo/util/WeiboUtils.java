@@ -50,49 +50,49 @@ public class WeiboUtils {
 		List<Status> statuses = new ArrayList<Status>();
 		int state = (Integer) taskParams.get("state");
 		switch (state) {
-		case HomeActivity.INITIATE:
-			statuses = weiboHomeService.selectHomeInfo();
-			if (statuses == null) {
+			case HomeActivity.INITIATE :
+				statuses = weiboHomeService.selectHomeInfo();
+				if (statuses == null) {
+					try {
+						statuses = getFriendsTimeLine(Weibo.getInstance(),
+								Weibo.getAppKey(), taskParams);
+					} catch (WeiboException e) {
+						e.printStackTrace();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					// 将获得的home数据写入数据库
+					weiboHomeService.insertHomeInfo(statuses);
+				}
+				break;
+			case HomeActivity.MORE_NEW :
 				try {
 					statuses = getFriendsTimeLine(Weibo.getInstance(),
 							Weibo.getAppKey(), taskParams);
-				} catch (WeiboException e) {
-					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
+				} catch (WeiboException e2) {
+					e2.printStackTrace();
+				} catch (JSONException e2) {
+					e2.printStackTrace();
 				}
-				// 将获得的home数据写入数据库
-				weiboHomeService.insertHomeInfo(statuses);
-			}
-			break;
-		case HomeActivity.MORE_NEW:
-			try {
-				statuses = getFriendsTimeLine(Weibo.getInstance(),
-						Weibo.getAppKey(), taskParams);
-			} catch (WeiboException e2) {
-				e2.printStackTrace();
-			} catch (JSONException e2) {
-				e2.printStackTrace();
-			}
-			// 更新home表
-			if (statuses != null) {
-				if (statuses.size() != 0) {
-					weiboHomeService.deleteHomeInfo();
-					weiboHomeService.insertHomeInfo(statuses);
+				// 更新home表
+				if (statuses != null) {
+					if (statuses.size() != 0) {
+						weiboHomeService.deleteHomeInfo();
+						weiboHomeService.insertHomeInfo(statuses);
+					}
 				}
-			}
 
-			break;
-		case HomeActivity.MORE_OLD:
-			try {
-				statuses = getFriendsTimeLine(Weibo.getInstance(),
-						Weibo.getAppKey(), taskParams);
-			} catch (WeiboException e2) {
-				e2.printStackTrace();
-			} catch (JSONException e2) {
-				e2.printStackTrace();
-			}
-			break;
+				break;
+			case HomeActivity.MORE_OLD :
+				try {
+					statuses = getFriendsTimeLine(Weibo.getInstance(),
+							Weibo.getAppKey(), taskParams);
+				} catch (WeiboException e2) {
+					e2.printStackTrace();
+				} catch (JSONException e2) {
+					e2.printStackTrace();
+				}
+				break;
 		}
 		return statuses;
 	}
