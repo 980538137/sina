@@ -20,12 +20,14 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class WebViewActivity extends Activity implements WeiboDialogListener {
+	private static final String TAG = "WebViewActivity";
 	private WebView webView = null;
 	private ProgressDialog pd = null;
 	private WeiboDialogListener dialogListener = null;
@@ -96,6 +98,7 @@ public class WebViewActivity extends Activity implements WeiboDialogListener {
 
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			Log.d(TAG, "shouldOverrideUrlLoading");
 			// 待后台增加对默认重定向地址的支持后修改下面的逻辑
 			String s= Weibo.getInstance().getRedirectUrl();
 			if (url.startsWith(Weibo.getInstance().getRedirectUrl())) {
@@ -110,12 +113,13 @@ public class WebViewActivity extends Activity implements WeiboDialogListener {
 		@Override
 		public void onReceivedError(WebView view, int errorCode,
 				String description, String failingUrl) {
-
+			Log.d(TAG, "onReceivedError");
 		}
 
 		@Override
 		public void onPageStarted(WebView view, String url, Bitmap favicon) {
 			super.onPageStarted(view, url, favicon);
+			Log.d(TAG, "onPageStarted");
 			/**
 			 * 点击授权，url正确
 			 */

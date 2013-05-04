@@ -27,13 +27,9 @@ import android.widget.LinearLayout;
 
 public class HomeActivity extends BaseActivity implements IWeiboActivity {
     private PullToRefreshListView lv_weibo = null;
-    // ListView尾部view
-    // private View lv_footer_view = null;
     private Button btn_say = null;
     private Button btn_refresh = null;
     private LinearLayout ll_loading = null;
-    // private LinearLayout ll_loading_more = null;
-    // private TextView tv_more = null;
     private long max_id = 0;
     private WeiboAdapter adapter = null;
     private Animation rotateAnimation = null;
