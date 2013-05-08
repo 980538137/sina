@@ -1,4 +1,4 @@
-package cn.edu.nuc.weibo.view;
+package cn.edu.nuc.weibo.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
