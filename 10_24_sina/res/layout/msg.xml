@@ -9,13 +9,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/grouplist_title_bg_sel"
-        android:orientation="vertical">
+        android:orientation="vertical" >
 
         <LinearLayout
             android:id="@+id/ll_group"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" 
-            android:gravity="center_horizontal">
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" >
 
             <ImageView
                 android:id="@+id/iv_at"
@@ -41,25 +41,28 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/iv_notification" />
         </LinearLayout>
+
         <ImageView
             android:id="@+id/iv_cursor_monitor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/title_bar_mark"
             android:layout_below="@+id/ll_group"
-            android:layout_marginLeft="54dip"/>
+            android:layout_marginLeft="54dip"
+            android:src="@drawable/title_bar_mark" />
+
         <ImageView
             android:id="@+id/iv_cursor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/title_bar_mark"
             android:layout_below="@+id/ll_group"
-            android:visibility="gone"/>
+            android:src="@drawable/title_bar_mark"
+            android:visibility="gone" />
     </RelativeLayout>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/vp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white"/>
+        android:background="@color/white" />
 
 </LinearLayout>
